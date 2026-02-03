@@ -1,0 +1,76 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    overflow: hidden;
+    font-size: 22px; /* base font size */
+}
+
+/* Slide container */
+.slide {
+    display: none;
+    height: 100vh;
+    padding: 70px;
+    box-sizing: border-box;
+}
+
+.slide.active {
+    display: block;
+}
+
+/* Slide titles */
+h1 {
+    color: #38bdf8;
+    margin-top: 0;
+    font-size: 48px;   /* BIG title */
+    margin-bottom: 25px;
+}
+
+/* Paragraph text */
+p {
+    line-height: 1.8;
+    max-width: 1000px;
+    font-size: 26px;   /* readable from distance */
+}
+
+/* Code blocks */
+pre {
+    background: #020617;
+    border: 1px solid #1e293b;
+    padding: 25px;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin-top: 30px;
+    font-size: 22px;   /* code is big */
+    line-height: 1.6;
+}
+
+/* Navigation bar */
+.nav {
+    position: fixed;
+    bottom: 25px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Buttons */
+button {
+    background: #38bdf8;
+    border: none;
+    padding: 14px 26px;
+    border-radius: 10px;
+    margin: 0 20px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+button:hover {
+    background: #0ea5e9;
+}
+
+/* Slide counter */
+#counter {
+    font-size: 18px;
+    opacity: 0.8;
+}

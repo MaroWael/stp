@@ -3,7 +3,6 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse, RedirectResponse
 from app.model import predict_and_save
 from app.utils import read_image
-import os
 
 app = FastAPI(title="VGG Table Demo")
 
@@ -24,3 +23,5 @@ async def extract_table(image: UploadFile = File(...)):
 @app.get("/")
 async def root():
     return RedirectResponse(url="/docs")
+
+# uvicorn app.main:app --reload

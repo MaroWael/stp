@@ -1,16 +1,11 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List
-import uuid
 
+app = FastAPI(title="Simple CRUD Demo")
 
-app = FastAPI(
-    title="FastAPI Deployment Demo",
-    description="Single file demo: CRUD + Image upload + VGG inference",
-    version="1.0.0"
-)
-
+# Fake DB
 items_db = []
+current_id = 1
 
 
 class Item(BaseModel):
@@ -19,70 +14,48 @@ class Item(BaseModel):
     in_stock: bool = True
 
 
-class ItemResponse(Item):
-    id: str
+# -------------------- CRUD --------------------
 
-@app.get("/")
-def root():
-    return {
-        "message": "Welcome to FastAPI deployment session"
-    }
-
-
-@app.post("/items", response_model=ItemResponse)
-async def create_item(item: Item):
+@app.post("/items")
+def create_item(item: Item):
+    global current_id
     new_item = {
-        "id": str(uuid.uuid4()),
+        "id": current_id,
         **item.dict()
     }
     items_db.append(new_item)
+    current_id += 1
     return new_item
 
 
-@app.get("/items", response_model=List[ItemResponse])
-def get_all_items():
+@app.get("/items")
+def get_items():
     return items_db
 
 
-@app.get("/items/{item_id}", response_model=ItemResponse)
-def get_item(item_id: str):
+@app.get("/items/{item_id}")
+def get_item(item_id: int):
     for item in items_db:
         if item["id"] == item_id:
             return item
+    raise HTTPException(404, "Item not found")
 
-    raise HTTPException(status_code=404, detail="Item not found")
 
-
-@app.put("/items/{item_id}", response_model=ItemResponse)
-def update_item(item_id: str, updated_item: Item):
-    for index, item in enumerate(items_db):
-        if item["id"] == item_id:
-            items_db[index] = {
-                "id": item_id,
-                **updated_item.dict()
-            }
-            return items_db[index]
-
-    raise HTTPException(status_code=404, detail="Item not found")
-
+@app.put("/items/{item_id}")
+def update_item(item_id: int, item: Item):
+    for i in range(len(items_db)):
+        if items_db[i]["id"] == item_id:
+            items_db[i] = {"id": item_id, **item.dict()}
+            return items_db[i]
+    raise HTTPException(404, "Item not found")
 
 
 @app.delete("/items/{item_id}")
-def delete_item(item_id: str):
-    for index, item in enumerate(items_db):
-        if item["id"] == item_id:
-            items_db.pop(index)
-            return {"message": "Item deleted successfully"}
+def delete_item(item_id: int):
+    for i in range(len(items_db)):
+        if items_db[i]["id"] == item_id:
+            items_db.pop(i)
+            return {"message": "Deleted"}
+    raise HTTPException(404, "Item not found")
 
-    raise HTTPException(status_code=404, detail="Item not found")
-
-
-
-@app.get("/search")
-def search_items(max_price: float):
-    result = []
-    for item in items_db:
-        if item["price"] <= max_price:
-            result.append(item)
-
-    return result
+# uvicorm main:app --reload
